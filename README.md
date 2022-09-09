@@ -1,6 +1,6 @@
 # code-server
 
-codercom/code-server:4.6.1 + (openjdk-11-jdk maven shellcheck openssh-server vim build-essential gcc g++ make nodejs kubectl powershell) + 26 extensions
+codercom/code-server:4.6.1 + (openjdk-11-jdk maven shellcheck openssh-server vim build-essential gcc g++ make nodejs kubectl) + 24 extensions
 
 ## Extensions list
 
@@ -10,10 +10,8 @@ codercom/code-server:4.6.1 + (openjdk-11-jdk maven shellcheck openssh-server vim
 - esbenp.prettier-vscode-9.8.0.vsix
 - formulahendry.vscode-mysql-0.4.1.vsix
 - GitHub.github-vscode-theme-6.3.2.vsix
-- hediet.vscode-drawio-1.6.4.vsix
 - ms-azuretools.vscode-docker-1.22.1.vsix
 - ms-kubernetes-tools.vscode-kubernetes-tools-1.3.10.vsix
-- ms-vscode.PowerShell-2022.8.5.vsix
 - octref.vetur-0.36.0.vsix
 - Pivotal.vscode-spring-boot-1.38.0.vsix
 - redhat.java-1.11.2022090804@linux-x64.vsix
@@ -30,3 +28,11 @@ codercom/code-server:4.6.1 + (openjdk-11-jdk maven shellcheck openssh-server vim
 - vscjava.vscode-spring-boot-dashboard-0.7.2022090900.vsix
 - vscjava.vscode-spring-initializr-0.11.2022090703.vsix
 - zhang.markdown-all-in-one-3.4.4.vsix
+
+## Push to Docker Hub
+
+```
+docker tag code-server-turbo-code-server:latest ziedzaiemcom/code-server-turbo:0.0.1
+docker login -u ziedzaiemcom
+docker push ziedzaiemcom/code-server-turbo:0.0.1
+```
