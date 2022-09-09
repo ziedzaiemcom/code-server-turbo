@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  code-server:
+    build: .
+    container_name: coder-server
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    volumes:
+      - coder-server-volume:/home/coder/
+      - ./.config:/home/coder/.config
+
+volumes:
+  coder-server-volume:
