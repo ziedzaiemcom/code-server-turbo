@@ -75,6 +75,13 @@ RUN cd /extensions \
 RUN sudo rm -rf /extensions
 ```
 
+## Run
+
+```
+docker compose build
+docker compose up -d
+```
+
 ## Push to Docker Hub
 
 ```
