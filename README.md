@@ -15,7 +15,7 @@ Other recommended tools:
 
 ## Bundled Extensions list
 
-Downloaded from https://marketplace.visualstudio.com/VSCode : 
+https://marketplace.visualstudio.com/VSCode : 
 
 - https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools
 - https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode
@@ -69,7 +69,7 @@ Downloaded from https://marketplace.visualstudio.com/VSCode :
 ## Run
 
 ```
-docker compose build
+docker compose build --progress=plain
 docker compose up -d
 ```
 

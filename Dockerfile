@@ -1,15 +1,18 @@
 FROM codercom/code-server:4.9.1
 
 RUN sudo apt update \
-    && sudo apt-get install -y curl gnupg apt-transport-https \
+    && echo 'Acquire::Retries "10";' | sudo tee -a /etc/apt/apt.conf.d/80-retries \
+    && sudo apt-get install -y curl gnupg apt-transport-https wget  \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - \
+    && echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu focal main" | sudo tee -a /etc/apt/sources.list.d/ansible.list \
+    && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367 \
     && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - \
     && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list \
-    && sudo apt update
-
-RUN sudo apt install -y nodejs kubectl shellcheck openssh-server vim  build-essential gcc g++ make openjdk-17-jdk maven nano netcat telnet jq httpie wget ncdu nmon exa bat sqlite3
-
-RUN sudo rm -rf /var/lib/apt/lists/*
+    && wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list \
+    && sudo apt update \
+    && sudo apt install -y nodejs kubectl shellcheck openssh-server vim  build-essential gcc g++ make openjdk-17-jdk maven nano netcat telnet jq httpie ncdu nmon exa bat sqlite3 terraform vault ansible \
+    && sudo rm -rf /var/lib/apt/lists/*
 
 RUN sudo npm install -g yarn npm eslint newman 
 
@@ -17,53 +20,48 @@ RUN sudo npm install -g yarn npm eslint newman
 # python3 -m http.server 8080
 # batcat
 
-ADD extensions /extensions
-
-RUN cd /extensions \
-    && /usr/bin/code-server \
-        --install-extension Angular.ng-template-15.1.0.vsix \
-        --install-extension DotJoshJohnson.xml-2.5.1.vsix \
-        --install-extension EditorConfig.EditorConfig-0.16.4.vsix \
-        --install-extension GitHub.github-vscode-theme-6.3.3.vsix \
-        --install-extension Gruntfuggly.todo-tree-0.0.222.vsix \
-        --install-extension HashiCorp.terraform-2.25.2@linux-x64.vsix \
-        --install-extension Pivotal.vscode-boot-dev-pack-0.2.0.vsix \
-        --install-extension Pivotal.vscode-spring-boot-1.43.0.vsix \
-        --install-extension SonarSource.sonarlint-vscode-3.13.0@linux-x64.vsix \
-        --install-extension Vue.volar-1.0.24@linux-x64.vsix \
-        --install-extension alefragnani.Bookmarks-13.3.1.vsix \
-        --install-extension alexcvzz.vscode-sqlite-0.14.1.vsix \
-        --install-extension bierner.color-info-0.7.2.vsix \
-        --install-extension dbaeumer.vscode-eslint-2.3.3.vsix \
-        --install-extension eamodio.gitlens-2023.1.2404.vsix \
-        --install-extension eg2.vscode-npm-script-0.3.29.vsix \
-        --install-extension esbenp.prettier-vscode-9.10.4.vsix \
-        --install-extension ms-azuretools.vscode-docker-1.23.3.vsix \
-        --install-extension ms-kubernetes-tools.vscode-kubernetes-tools-1.3.11.vsix \
-        --install-extension ms-vscode-remote.remote-ssh-0.95.2023012415.vsix \
-        --install-extension ms-vscode-remote.remote-ssh-edit-0.84.0.vsix \
-        --install-extension ms-vscode-remote.vscode-remote-extensionpack-0.23.0.vsix \
-        --install-extension ms-vscode.PowerShell-2023.1.0.vsix \
-        --install-extension ms-vscode.cpptools-1.14.0@linux-x64.vsix \
-        --install-extension ms-vscode.remote-explorer-0.1.2023012309.vsix \
-        --install-extension mutantdino.resourcemonitor-1.0.7.vsix \
-        --install-extension octref.vetur-0.36.1.vsix \
-        --install-extension redhat.ansible-1.1.34.vsix \
-        --install-extension redhat.java-1.15.2023012103@linux-x64.vsix \
-        --install-extension redhat.vscode-xml-0.24.2023012403@linux-x64.vsix \
-        --install-extension redhat.vscode-yaml-1.11.10112022.vsix \
-        --install-extension streetsidesoftware.code-spell-checker-2.15.0.vsix \
-        --install-extension streetsidesoftware.code-spell-checker-french-0.2.4.vsix \
-        --install-extension timonwong.shellcheck-0.29.3@linux-x64.vsix \
-        --install-extension vscjava.vscode-java-debug-0.47.2023011221.vsix \
-        --install-extension vscjava.vscode-java-dependency-0.21.2023011900.vsix \
-        --install-extension vscjava.vscode-java-test-0.37.2022121501.vsix \
-        --install-extension vscjava.vscode-lombok-1.1.0.vsix \
-        --install-extension vscjava.vscode-maven-0.40.2023011903.vsix \
-        --install-extension vscjava.vscode-spring-boot-dashboard-0.10.2023012000.vsix \
-        --install-extension vscjava.vscode-spring-initializr-0.11.2023011003.vsix \
-        --install-extension wayou.vscode-todo-highlight-1.0.5.vsix \
-        --install-extension yzhang.markdown-all-in-one-3.5.0.vsix \
-    && cd -
-
-RUN sudo rm -rf /extensions
+RUN /usr/bin/code-server \
+        --install-extension ms-python.python \
+        --install-extension esbenp.prettier-vscode \
+        --install-extension dbaeumer.vscode-eslint \
+        --install-extension redhat.java \
+        --install-extension vscjava.vscode-java-debug \
+        --install-extension ms-azuretools.vscode-docker \
+        --install-extension eamodio.gitlens \
+        --install-extension vscjava.vscode-maven \
+        --install-extension vscjava.vscode-java-test \
+        --install-extension vscjava.vscode-java-dependency \
+        --install-extension redhat.vscode-yaml \
+        --install-extension octref.vetur \
+        --install-extension streetsidesoftware.code-spell-checker-french \
+        --install-extension yzhang.markdown-all-in-one \
+        --install-extension Angular.ng-template \
+        --install-extension DotJoshJohnson.xml \
+        --install-extension redhat.vscode-xml \
+        --install-extension Vue.volar \
+        --install-extension GitHub.github-vscode-theme \
+        --install-extension EditorConfig.EditorConfig \
+        --install-extension streetsidesoftware.code-spell-checker \
+        --install-extension eg2.vscode-npm-script \
+        --install-extension wayou.vscode-todo-highlight \
+        --install-extension ms-kubernetes-tools.vscode-kubernetes-tools \
+        --install-extension Gruntfuggly.todo-tree \
+        --install-extension alefragnani.Bookmarks \
+        --install-extension HashiCorp.terraform \
+        --install-extension MS-CEINTL.vscode-language-pack-fr \
+        --install-extension vscjava.vscode-spring-initializr \
+        --install-extension Pivotal.vscode-spring-boot \
+        --install-extension ms-vscode.hexeditor \
+        --install-extension Pivotal.vscode-boot-dev-pack \
+        --install-extension vscjava.vscode-spring-boot-dashboard \
+        --install-extension SonarSource.sonarlint-vscode \
+        --install-extension alexcvzz.vscode-sqlite \
+        --install-extension vscjava.vscode-lombok \
+        --install-extension timonwong.shellcheck \
+        --install-extension mutantdino.resourcemonitor \
+        --install-extension redhat.ansible \
+        --install-extension bierner.color-info \
+        --install-extension anwar.resourcemonitor \
+        --install-extension gabrielbb.vscode-lombok \
+        --install-extension ms-ceintl.vscode-language-pack-fr \
+    && rm /home/coder/.local/share/code-server/CachedExtensionVSIXs/*
