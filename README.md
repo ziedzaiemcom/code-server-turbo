@@ -81,6 +81,25 @@ docker login -u ziedzaiemcom
 docker push ziedzaiemcom/code-server-turbo:0.0.2
 ```
 
+## Push to GitHub Packages
+
+```
+docker tag code-server-turbo-code-server:latest ziedzaiemcom/code-server-turbo:0.0.2
+# or
+docker tag code-server-turbo_code-server:latest ziedzaiemcom/code-server-turbo:0.0.2
+docker login -u ziedzaiemcom
+docker push ziedzaiemcom/code-server-turbo:0.0.2
+
+docker login ghcr.io --username ziedzaiemcom
+
+docker tag code-server-turbo-code-server:latest ghcr.io/ziedzaiemcom/code-server-turbo:0.0.2
+docker tag code-server-turbo_code-server:latest ghcr.io/ziedzaiemcom/code-server-turbo:0.0.2
+
+
+docker push ghcr.io/ziedzaiemcom/code-server-turbo:0.0.2
+
+```
+
 ## Note
 
 For slow internet connections:
@@ -92,6 +111,8 @@ sudo nano /etc/docker/daemon.json
 }
 
 ```
+
+If you are on Windows, try to switch to Linux...
 
 ## License
 
